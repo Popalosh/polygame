@@ -3,11 +3,14 @@ package polygame;
 import java.util.ArrayList;
 
 class Player extends Sprite {
+
     private int dx;
     private int dy;
     private ArrayList<Missile> missiles;
 
-    Player(int x, int y) {
+    private final int PLAYER_SPEED = 4;
+
+    public Player(int x, int y) {
         super(x, y);
         this.initPlayer();
     }
@@ -18,7 +21,7 @@ class Player extends Sprite {
         this.getImageDimensions();
     }
 
-    void move() {
+    public void move() {
         this.x += this.dx;
         this.y += this.dy;
     }
@@ -27,11 +30,11 @@ class Player extends Sprite {
         this.missiles.add(new Missile(this.x + this.width, this.y + this.height / 2));
     }
 
-    ArrayList getMissiles() {
+    public ArrayList getMissiles() {
         return this.missiles;
     }
 
-    void getInput() {
+    public void getInput() {
         boolean[] keys = KeyManager.getKeys();
 
         dy = 0;
@@ -43,19 +46,19 @@ class Player extends Sprite {
         }
 
         if (keys[65]) { // a
-            this.dx = -4;
+            this.dx = -PLAYER_SPEED;
         }
 
         if (keys[68]) { // d
-            this.dx = 4;
+            this.dx = PLAYER_SPEED;
         }
 
         if (keys[87]) {  // w
-            this.dy = -4;
+            this.dy = -PLAYER_SPEED;
         }
 
         if (keys[83]) { // s
-            this.dy = 4;
+            this.dy = PLAYER_SPEED;
         }
     }
 }

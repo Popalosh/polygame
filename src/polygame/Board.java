@@ -25,11 +25,12 @@ public class Board extends JPanel implements ActionListener {
     private int B_WIDTH = 640;
     private int B_HEIGHT = 480;
     private int DELAY = 7;
-    private int dead = 0;
-    private int health = 30;
-    private int cont = 30;
-    private int incAlien = 20;
-    private int countOfAlien = 10;
+    private int dead;
+    private int health;
+    private int cont;
+    private int incAlien;
+    private int countOfAlien;
+    private KeyManager keyManager;
 
 
     public Board() {
@@ -37,7 +38,8 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void initBoard() {
-        this.addKeyListener(new KeyManager());
+        this.keyManager = new KeyManager();
+        this.addKeyListener(keyManager);
         this.setFocusable(true);
         this.setBackground(Color.BLACK);
         this.ingame = true;
@@ -46,10 +48,16 @@ public class Board extends JPanel implements ActionListener {
         this.initAliens();
         this.timer = new Timer(this.DELAY, this);
         this.timer.start();
+        dead = 0;
+        health = 30;
+        cont = 30;
+        incAlien = 20;
+        countOfAlien = 10;
     }
 
 
     private void initAliens() {
+
         this.aliens = new ArrayList();
 
         for (int i = 0; i < this.countOfAlien; ++i) {
@@ -101,25 +109,17 @@ public class Board extends JPanel implements ActionListener {
 
     private void drawGameOver(Graphics g) {
         String msg = "Game Over";
-        String score = "Your score: " + (this.dead - 1);
+        String res = "Press Enter to restart";
+        String score = "Your score: " + (this.dead);
         Font small = new Font("Helvetica", 1, 14);
         FontMetrics fm = this.getFontMetrics(small);
         g.setColor(Color.WHITE);
         g.setFont(small);
         g.drawString(msg, (this.B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
-        g.drawString(score, (int) ((double) (this.B_WIDTH - fm.stringWidth(msg)) / 2), (int) ((double) this.B_HEIGHT / 1.7D));
+        g.drawString(res, (this.B_WIDTH - fm.stringWidth(res)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
+        g.drawString(score, (int) ((double) (this.B_WIDTH - fm.stringWidth(res)) / 1.79D), (int) ((double) this.B_HEIGHT / 1.7D));
     }
 
-    public void actionPerformed(ActionEvent e) {
-        this.inGame();
-        this.updatePlayer();
-        this.updateMissiles();
-        this.updateAliens();
-        this.increaseHealth();
-        this.increaseAlien();
-        this.checkCollision();
-        this.repaint();
-    }
 
     private void increaseHealth() {
         if (this.dead == this.cont) {
@@ -137,9 +137,17 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
-    private void inGame() {
+    public void actionPerformed(ActionEvent e) {
         if (!this.ingame) {
-            this.timer.stop();
+            this.restart();
+        } else {
+            this.updatePlayer();
+            this.updateMissiles();
+            this.updateAliens();
+            this.increaseHealth();
+            this.increaseAlien();
+            this.checkCollision();
+            this.repaint();
         }
     }
 
@@ -179,17 +187,17 @@ public class Board extends JPanel implements ActionListener {
                 a.move();
             } else {
                 this.aliens.remove(i);
-                ++this.dead;
+                if (ingame) {
+                    ++this.dead;
+                }
             }
         }
     }
 
     private void checkCollision() {
         Rectangle r3 = this.player.getBounds();
-        Iterator var2 = this.aliens.iterator();
 
-        while (var2.hasNext()) {
-            Alien alien = (Alien) var2.next();
+        for (Alien alien : this.aliens) {
             Rectangle r2 = alien.getBounds();
 
             if (this.health == 0) {
@@ -206,15 +214,12 @@ public class Board extends JPanel implements ActionListener {
         }
 
         ArrayList ms = this.player.getMissiles();
-        Iterator var10 = ms.iterator();
 
-        while (var10.hasNext()) {
-            Missile m = (Missile) var10.next();
+        for (Object m1 : ms) {
+            Missile m = (Missile) m1;
             Rectangle r1 = m.getBounds();
-            Iterator var6 = this.aliens.iterator();
 
-            while (var6.hasNext()) {
-                Alien alien = (Alien) var6.next();
+            for (Alien alien : this.aliens) {
                 Rectangle r2 = alien.getBounds();
                 if (r1.intersects(r2)) {
                     m.setVisible(false);
@@ -223,4 +228,12 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
+
+    public void restart() {
+        if (KeyManager.getKeys()[13]) { // enter
+            this.timer.stop();
+            this.initBoard();
+        }
+    }
+
 }

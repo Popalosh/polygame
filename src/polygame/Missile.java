@@ -2,8 +2,9 @@ package polygame;
 
 
 class Missile extends Sprite {
+
     private final int BOARD_WIDTH = 640;
-    private final int MISSILE_SPEED = 8;
+    private final int MISSILE_SPEED = 7;
 
     Missile(int x, int y) {
         super(x, y);
@@ -16,10 +17,9 @@ class Missile extends Sprite {
     }
 
     void move() {
-        this.x += 8;
-        if (this.x > 640) {
+        this.x += MISSILE_SPEED;
+        if (this.x > BOARD_WIDTH) {
             this.visibility = false;
         }
-
     }
 }

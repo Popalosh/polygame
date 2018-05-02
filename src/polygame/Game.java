@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 
 public class Game extends JFrame {
+
     private Game() {
         this.initUI();
     }
@@ -12,7 +13,7 @@ public class Game extends JFrame {
         this.add(new Board());
         this.setResizable(false);
         this.pack();
-        this.setTitle("Polygame");
+        this.setTitle("polygame");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(2);
     }

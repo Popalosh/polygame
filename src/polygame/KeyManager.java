@@ -4,6 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class KeyManager extends KeyAdapter {
+
     private static boolean[] keys;
 
     public KeyManager() {

@@ -2,59 +2,59 @@ package polygame;
 
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.ImageIcon;
 
-class Sprite {
-    int x;
-    int y;
-    int width;
-    int height;
-    boolean visibility;
+public class Sprite {
+
+    public int x;
+    public int y;
+    public int width;
+    public int height;
+    public boolean visibility;
     private Image image;
 
-    Sprite(int x, int y) {
+    public Sprite(int x, int y) {
         this.x = x;
         this.y = y;
         this.visibility = true;
     }
 
-    void getImageDimensions() {
-        this.width = this.image.getWidth((ImageObserver) null);
-        this.height = this.image.getHeight((ImageObserver) null);
+    public void getImageDimensions() {
+        this.width = this.image.getWidth(null);
+        this.height = this.image.getHeight(null);
     }
 
-    void loadImage(String imageName) {
+    public void loadImage(String imageName) {
         try {
             File url = new File(imageName);
             ImageIcon ii = new ImageIcon(url.toURI().toURL());
             this.image = ii.getImage();
-        } catch (MalformedURLException e){};
+        } catch (MalformedURLException ignored){};
     }
 
-    Image getImage() {
+    public Image getImage() {
         return this.image;
     }
 
-    int getX() {
+    public int getX() {
         return this.x;
     }
 
-    int getY() {
+    public int getY() {
         return this.y;
     }
 
-    boolean isVisible() {
+    public boolean isVisible() {
         return this.visibility;
     }
 
-    void setVisible(Boolean visible) {
+    public void setVisible(Boolean visible) {
         this.visibility = visible;
     }
 
-    Rectangle getBounds() {
+    public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, this.width, this.height);
     }
 }
