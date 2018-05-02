@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.JPanel;
@@ -230,7 +231,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void restart() {
-        if (KeyManager.getKeys()[13]) { // enter
+        if (KeyManager.getKeys()[KeyEvent.VK_ENTER]) {
             this.timer.stop();
             this.initBoard();
         }
