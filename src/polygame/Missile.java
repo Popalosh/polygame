@@ -3,8 +3,8 @@ package polygame;
 
 class Missile extends Sprite {
 
-    private final int BOARD_WIDTH = 640;
-    private final int MISSILE_SPEED = 7;
+    private final int BOARD_WIDTH = Board.B_WIDTH;
+    private final int MISSILE_SPEED = 8;
 
     Missile(int x, int y) {
         super(x, y);
@@ -12,7 +12,7 @@ class Missile extends Sprite {
     }
 
     private void initMissile() {
-        this.loadImage("res/misle.png");
+        this.loadImage("misle.png");
         this.getImageDimensions();
     }
 

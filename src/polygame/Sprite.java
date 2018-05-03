@@ -2,8 +2,7 @@ package polygame;
 
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.io.File;
-import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.ImageIcon;
 
 public class Sprite {
@@ -27,11 +26,9 @@ public class Sprite {
     }
 
     public void loadImage(String imageName) {
-        try {
-            File url = new File(imageName);
-            ImageIcon ii = new ImageIcon(url.toURI().toURL());
+            URL url = getClass().getResource("resources/" + imageName);
+            ImageIcon ii = new ImageIcon(url);
             this.image = ii.getImage();
-        } catch (MalformedURLException ignored){};
     }
 
     public Image getImage() {

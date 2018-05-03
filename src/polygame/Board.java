@@ -21,30 +21,27 @@ public class Board extends JPanel implements ActionListener {
     private Player player;
     private ArrayList<Alien> aliens;
     private boolean ingame;
-    private int ICRAFT_X = 40;
-    private int ICRAFT_Y = 60;
-    private int B_WIDTH = 640;
-    private int B_HEIGHT = 480;
-    private int DELAY = 7;
+    private final int ICRAFT_X = 60;
+    private final int ICRAFT_Y = 60;
+    public static final int B_WIDTH = 800;
+    private final int B_HEIGHT = 500;
+    private final int DELAY = 7;
     private int dead;
     private int health;
     private int cont;
     private int incAlien;
     private int countOfAlien;
-    private KeyManager keyManager;
-
 
     public Board() {
         this.initBoard();
     }
 
     private void initBoard() {
-        this.keyManager = new KeyManager();
-        this.addKeyListener(keyManager);
+        this.addKeyListener(new KeyManager());
         this.setFocusable(true);
-        this.setBackground(Color.BLACK);
+        this.setBackground(Color.WHITE);
         this.ingame = true;
-        this.setPreferredSize(new Dimension(this.B_WIDTH, this.B_HEIGHT));
+        this.setPreferredSize(new Dimension(B_WIDTH, this.B_HEIGHT));
         this.player = new Player(this.ICRAFT_X, this.ICRAFT_Y);
         this.initAliens();
         this.timer = new Timer(this.DELAY, this);
@@ -62,11 +59,10 @@ public class Board extends JPanel implements ActionListener {
         this.aliens = new ArrayList();
 
         for (int i = 0; i < this.countOfAlien; ++i) {
-            int randX = this.B_WIDTH + (int) (Math.random() * 800.0D);
-            int randY = 20 + (int) (Math.random() * 440.0D);
+            int randX = this.B_WIDTH + (int) (Math.random() * 800);
+            int randY = (int) (Math.random() * 440);
             this.aliens.add(new Alien(randX, randY));
         }
-
     }
 
     public void paintComponent(Graphics g) {
@@ -103,7 +99,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.drawString("Aliens killed: " + this.dead, 5, 15);
         g.drawString("Health: " + this.health, 580, 15);
     }
@@ -114,7 +110,7 @@ public class Board extends JPanel implements ActionListener {
         String score = "Your score: " + (this.dead);
         Font small = new Font("Helvetica", 1, 14);
         FontMetrics fm = this.getFontMetrics(small);
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.setFont(small);
         g.drawString(msg, (this.B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
         g.drawString(res, (this.B_WIDTH - fm.stringWidth(res)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
@@ -127,7 +123,6 @@ public class Board extends JPanel implements ActionListener {
             this.cont += 30;
             this.health += 5;
         }
-
     }
 
     private void increaseAlien() {
@@ -135,7 +130,6 @@ public class Board extends JPanel implements ActionListener {
             this.incAlien += 20;
             this.countOfAlien += 5;
         }
-
     }
 
     public void actionPerformed(ActionEvent e) {

@@ -15,7 +15,7 @@ public class Game extends JFrame {
         this.pack();
         this.setTitle("polygame");
         this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(2);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public static void main(String[] args) {

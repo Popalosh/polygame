@@ -8,7 +8,7 @@ class Player extends Sprite {
     private int dy;
     private ArrayList<Missile> missiles;
 
-    private final int PLAYER_SPEED = 4;
+    private final int PLAYER_SPEED = 5;
 
     public Player(int x, int y) {
         super(x, y);
@@ -17,7 +17,7 @@ class Player extends Sprite {
 
     private void initPlayer() {
         this.missiles = new ArrayList();
-        this.loadImage("res/player.png");
+        this.loadImage("player.png");
         this.getImageDimensions();
     }
 

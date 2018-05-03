@@ -2,7 +2,7 @@ package polygame;
 
 class Alien extends Sprite {
 
-    private int ALIEN_SPEED = 2;
+    private int ALIEN_SPEED = 3;
 
     public Alien(int x, int y) {
         super(x, y);
@@ -10,7 +10,7 @@ class Alien extends Sprite {
     }
 
     private void initAlien() {
-        this.loadImage("res/alien.png");
+        this.loadImage("alien.png");
         this.getImageDimensions();
     }
 
