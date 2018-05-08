@@ -34,7 +34,7 @@ public class Board extends JPanel implements ActionListener {
     private int incAlien;
     private int countOfAlien;
     private ArrayList<Explosion> explosions;
-    private ArrayList<Counter> counters = new ArrayList<>();
+    private ArrayList<Counter> counters;
 
     public Board() {
         this.initBoard();
@@ -49,6 +49,7 @@ public class Board extends JPanel implements ActionListener {
         this.player = new Player(this.ICRAFT_X, this.ICRAFT_Y);
         this.initAliens();
         this.explosions = new ArrayList<>();
+        this.counters = new ArrayList<>();
         this.timer = new Timer(this.DELAY, this);
         this.timer.start();
         dead = 0;
@@ -134,7 +135,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void increaseHealth() {
         if (this.dead == this.cont) {
-            this.cont += 30;
+            this.cont += 20;
             this.health += 5;
         }
     }

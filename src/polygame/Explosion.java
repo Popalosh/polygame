@@ -13,9 +13,4 @@ public class Explosion extends Sprite {
         this.getImageDimensions();
     }
 
-    public static void deExplosion(Explosion boom) {
-        boom.setVisible(false);
-    }
-
-
 }
