@@ -8,7 +8,7 @@ class Player extends Sprite {
     private int dy;
     private ArrayList<Missile> missiles;
 
-    private final int PLAYER_SPEED = 5;
+    private final int PLAYER_SPEED = 3;
 
     public Player(int x, int y) {
         super(x, y);

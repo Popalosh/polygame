@@ -2,7 +2,7 @@ package polygame;
 
 class Alien extends Sprite {
 
-    private int ALIEN_SPEED = 3;
+    private int ALIEN_SPEED = 2;
 
     public Alien(int x, int y) {
         super(x, y);

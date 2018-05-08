@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -31,6 +33,8 @@ public class Board extends JPanel implements ActionListener {
     private int cont;
     private int incAlien;
     private int countOfAlien;
+    private ArrayList<Explosion> explosions;
+    private ArrayList<Counter> counters = new ArrayList<>();
 
     public Board() {
         this.initBoard();
@@ -39,11 +43,12 @@ public class Board extends JPanel implements ActionListener {
     private void initBoard() {
         this.addKeyListener(new KeyManager());
         this.setFocusable(true);
-        this.setBackground(Color.WHITE);
+        this.setBackground(Color.BLACK);
         this.ingame = true;
         this.setPreferredSize(new Dimension(B_WIDTH, this.B_HEIGHT));
         this.player = new Player(this.ICRAFT_X, this.ICRAFT_Y);
         this.initAliens();
+        this.explosions = new ArrayList<>();
         this.timer = new Timer(this.DELAY, this);
         this.timer.start();
         dead = 0;
@@ -99,9 +104,18 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-        g.setColor(Color.BLACK);
+        var3 = this.explosions.iterator();
+
+        while (var3.hasNext()) {
+            Explosion boom = (Explosion) var3.next();
+            if (boom.isVisible()) {
+                g.drawImage(boom.getImage(), boom.getX(), boom.getY(), this);
+            }
+        }
+
+        g.setColor(Color.WHITE);
         g.drawString("Aliens killed: " + this.dead, 5, 15);
-        g.drawString("Health: " + this.health, 580, 15);
+        g.drawString("Health: " + this.health, 730, 15);
     }
 
     private void drawGameOver(Graphics g) {
@@ -110,7 +124,7 @@ public class Board extends JPanel implements ActionListener {
         String score = "Your score: " + (this.dead);
         Font small = new Font("Helvetica", 1, 14);
         FontMetrics fm = this.getFontMetrics(small);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         g.setFont(small);
         g.drawString(msg, (this.B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
         g.drawString(res, (this.B_WIDTH - fm.stringWidth(res)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
@@ -143,6 +157,8 @@ public class Board extends JPanel implements ActionListener {
             this.increaseAlien();
             this.checkCollision();
             this.repaint();
+            this.updateCounters();
+            this.checkExplosions();
         }
     }
 
@@ -219,6 +235,9 @@ public class Board extends JPanel implements ActionListener {
                 if (r1.intersects(r2)) {
                     m.setVisible(false);
                     alien.setVisible(false);
+                    Explosion boom = new Explosion(alien.getX(), alien.getY());
+                    this.counters.add(new Counter());
+                    this.explosions.add(boom);
                 }
             }
         }
@@ -228,6 +247,22 @@ public class Board extends JPanel implements ActionListener {
         if (KeyManager.getKeys()[KeyEvent.VK_ENTER]) {
             this.timer.stop();
             this.initBoard();
+        }
+    }
+
+    public void checkExplosions (){
+        Iterator it = this.counters.iterator();
+        while (it.hasNext()) {
+            Counter counter = (Counter) it.next();
+            if (counter.getCounter() % 90 == 0) {
+                this.explosions.get(this.counters.indexOf(counter)).setVisible(false);
+            }
+        }
+    }
+
+    public void updateCounters () {
+        for( Counter counter : counters ) {
+            counter.counter++;
         }
     }
 
