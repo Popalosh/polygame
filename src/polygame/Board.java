@@ -1,21 +1,16 @@
 package polygame;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener {
 
@@ -23,6 +18,10 @@ public class Board extends JPanel implements ActionListener {
     private Player player;
     private ArrayList<Alien> aliens;
     private boolean ingame;
+    private boolean inmenu;
+    //    private boolean readName;
+    private boolean records;
+    private boolean recordVisibility = false;
     private final int ICRAFT_X = 60;
     private final int ICRAFT_Y = 60;
     public static final int B_WIDTH = 800;
@@ -35,6 +34,12 @@ public class Board extends JPanel implements ActionListener {
     private int countOfAlien;
     private ArrayList<Explosion> explosions;
     private ArrayList<Counter> counters;
+    //    private StringBuilder name;
+    public static ArrayList<String> lines;
+    private Graphics g;
+    private boolean isScoreboardExist;
+    private File file;
+
 
     public Board() {
         this.initBoard();
@@ -44,7 +49,10 @@ public class Board extends JPanel implements ActionListener {
         this.addKeyListener(new KeyManager());
         this.setFocusable(true);
         this.setBackground(Color.BLACK);
-        this.ingame = true;
+        this.inmenu = false;
+//        this.readName = false;
+        this.ingame = false;
+        this.records = false;
         this.setPreferredSize(new Dimension(B_WIDTH, this.B_HEIGHT));
         this.player = new Player(this.ICRAFT_X, this.ICRAFT_Y);
         this.initAliens();
@@ -57,6 +65,29 @@ public class Board extends JPanel implements ActionListener {
         cont = 30;
         incAlien = 20;
         countOfAlien = 10;
+
+        file = new File("hightScores.txt");
+
+        try {
+            if (!file.exists()) {
+                this.isScoreboardExist = false;
+                file.createNewFile();
+
+                BufferedWriter writer = Files.newBufferedWriter(file.toPath());
+                for (int i = 0; i < 10; i++) {
+                    writer.write(String.valueOf(10 - i));
+                    writer.newLine();
+                }
+                writer.close();
+
+            } else {
+                this.isScoreboardExist = true;
+                this.inmenu = true;
+                Board.lines = (ArrayList<String>) Files.readAllLines(file.toPath());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -65,7 +96,7 @@ public class Board extends JPanel implements ActionListener {
         this.aliens = new ArrayList();
 
         for (int i = 0; i < this.countOfAlien; ++i) {
-            int randX = this.B_WIDTH + (int) (Math.random() * 800);
+            int randX = B_WIDTH + (int) (Math.random() * 800);
             int randY = (int) (Math.random() * 440);
             this.aliens.add(new Alien(randX, randY));
         }
@@ -73,10 +104,20 @@ public class Board extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (this.ingame) {
-            this.drawObjects(g);
+        if (this.isScoreboardExist) {
+            if (!this.ingame && this.inmenu /*&& !this.readName*/ && !this.records) {
+                this.drawMenu(g);
+//            } else if (this.readName) {
+//                this.drawReadNamePanel(g);
+            } else if (!this.ingame && !this.inmenu /*&& !this.readName*/ && this.records && this.recordVisibility) {
+                this.drawScoreBoard(g);
+            } else if (this.ingame && !this.inmenu /*&& !this.readName*/ && !this.records) {
+                this.drawObjects(g);
+            } else if (!this.ingame && !this.inmenu /*&& !this.readName*/ && !this.records) {
+                this.drawGameOver(g);
+            }
         } else {
-            this.drawGameOver(g);
+            this.drawMsg(g);
         }
         Toolkit.getDefaultToolkit().sync();
     }
@@ -119,17 +160,86 @@ public class Board extends JPanel implements ActionListener {
         g.drawString("Health: " + this.health, 730, 15);
     }
 
+    private void drawMsg(Graphics g) {
+        String msg = "Scoreboard file not found, please restart the game";
+
+        Font small = new Font("Helvetica", 1, 18);
+        FontMetrics fm = this.getFontMetrics(small);
+
+        g.setColor(Color.WHITE);
+        g.setFont(small);
+
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
+    }
+
+    private void drawMenu(Graphics g) {
+        String start = "Press Enter to start New Game";
+        String scores = "Press 'R' to check list of Records";
+
+        Font small = new Font("Helvetica", 1, 18);
+        FontMetrics fm = this.getFontMetrics(small);
+
+        g.setColor(Color.WHITE);
+        g.setFont(small);
+
+        g.drawString(start, (B_WIDTH - fm.stringWidth(start)) / 2, this.B_HEIGHT / 2);
+
+        if (this.recordVisibility) {
+            g.drawString(scores, (B_WIDTH - fm.stringWidth(scores)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
+        }
+    }
+
+//    private void drawReadNamePanel(Graphics g) {  // Need to sort out why that method doesn't drawing
+//        String ask = "Write Your NickName";
+//        TextField field = new TextField();
+//        field.addActionListener(this); // idk how to use textField
+//
+//        Font small = new Font("Helvetica", 1, 22);
+//        FontMetrics fm = this.getFontMetrics(small);
+//
+//        g.setColor(Color.WHITE);
+//        g.setFont(small);
+//        g.drawString(ask, (B_WIDTH - fm.stringWidth(ask)) / 2, this.B_HEIGHT / 2);
+//        g.drawString(field.getText(), (B_WIDTH - fm.stringWidth(field.getText())) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
+//        ;
+//    }
+
+    public void drawScoreBoard(Graphics g) {
+
+        String msg = "Press Escape to go to Menu";
+
+        Font small = new Font("Helvetica", 1, 12);
+        FontMetrics fm = this.getFontMetrics(small);
+
+        g.setColor(Color.WHITE);
+        g.setFont(small);
+
+
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 14);
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.isEmpty()) {
+                g.drawString("", (B_WIDTH - fm.stringWidth("")) / 2, (this.B_HEIGHT / 14) * (i + 2));
+            } else {
+                if (lines.get(i).isEmpty()) {
+                    g.drawString("", (B_WIDTH - fm.stringWidth("")) / 2, (this.B_HEIGHT / 14) * (i + 2));
+                } else {
+                    g.drawString(lines.get(i), (B_WIDTH - fm.stringWidth(lines.get(i))) / 2, (this.B_HEIGHT / 14) * (i + 2));
+                }
+            }
+        }
+    }
+
     private void drawGameOver(Graphics g) {
         String msg = "Game Over";
         String res = "Press Enter to restart";
         String score = "Your score: " + (this.dead);
-        Font small = new Font("Helvetica", 1, 14);
+        Font small = new Font("Helvetica", 1, 18);
         FontMetrics fm = this.getFontMetrics(small);
         g.setColor(Color.WHITE);
         g.setFont(small);
-        g.drawString(msg, (this.B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
-        g.drawString(res, (this.B_WIDTH - fm.stringWidth(res)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
-        g.drawString(score, (int) ((double) (this.B_WIDTH - fm.stringWidth(res)) / 1.79D), (int) ((double) this.B_HEIGHT / 1.7D));
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
+        g.drawString(score, (int) ((double) (B_WIDTH - fm.stringWidth(score)) / 1.79D), (int) ((double) this.B_HEIGHT / 1.7D));
+        g.drawString(res, (B_WIDTH - fm.stringWidth(res)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
     }
 
 
@@ -148,7 +258,13 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (!this.ingame) {
+        if (this.inmenu) {
+            this.menu();
+//        } else if (this.readName) {
+//            this.reading();
+        } else if (this.records) {
+            this.recordsPanel();
+        } else if (!this.ingame) {
             this.restart();
         } else {
             this.updatePlayer();
@@ -212,16 +328,12 @@ public class Board extends JPanel implements ActionListener {
         for (Alien alien : this.aliens) {
             Rectangle r2 = alien.getBounds();
 
-            if (this.health == 0) {
+            if (this.health == 0 || r3.intersects(r2)) {
                 this.player.setVisible(false);
                 alien.setVisible(false);
                 this.ingame = false;
-            }
-
-            if (r3.intersects(r2)) {
-                this.player.setVisible(false);
-                alien.setVisible(false);
-                this.ingame = false;
+                this.recordVisibility = true;
+                this.writingRecord();
             }
         }
 
@@ -251,20 +363,127 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    public void checkExplosions (){
+    public void checkExplosions() {
         Iterator it = this.counters.iterator();
         while (it.hasNext()) {
             Counter counter = (Counter) it.next();
-            if (counter.getCounter() % 90 == 0) {
+            if (counter.getCounter() % 60 == 0) {
                 this.explosions.get(this.counters.indexOf(counter)).setVisible(false);
             }
         }
     }
 
-    public void updateCounters () {
-        for( Counter counter : counters ) {
+    public void updateCounters() {
+        for (Counter counter : counters) {
             counter.counter++;
         }
     }
 
+    public void menu() {
+        if (KeyManager.getKeys()[KeyEvent.VK_ENTER]) {
+            this.ingame = true;
+//            this.readName = true;
+            this.inmenu = false;
+        }
+
+        if (this.recordVisibility) {
+            if (KeyManager.getKeys()[KeyEvent.VK_R]) {
+                this.ingame = false;
+//                this.readName = false;
+                this.records = true;
+                this.inmenu = false;
+            }
+        }
+    }
+
+//    public void reading() {
+//        if (KeyManager.getKeys()[KeyEvent.VK_ENTER]) {
+//            this.ingame = true;
+//            this.readName = false;
+//            this.records = false;
+//            this.inmenu = false;
+//        }
+//    }
+
+    public void recordsPanel() {
+        if (KeyManager.getKeys()[KeyEvent.VK_ESCAPE]) {
+            this.ingame = false;
+//            this.readName = false;
+            this.records = false;
+            this.inmenu = true;
+        }
+    }
+
+    public void writingRecord() {
+//        Should rework that part with correct using of NickName
+//
+//        for (String line : oldLines) {
+//            if (this.dead > Integer.parseInt(line.split(" ")[1])) {
+//                lines.add(oldLines.indexOf(line), this.name + " " +  this.dead);
+//                break;
+//            }
+//        }
+
+        if (!(this.dead < Integer.parseInt(lines.get(0)))) {
+            try {
+                BufferedWriter writer = Files.newBufferedWriter(file.toPath());
+                writer.write(String.valueOf(this.dead));
+                writer.newLine();
+                for (int i = 0; i < 9; i++) {
+                    writer.write(lines.get(i));
+                    writer.newLine();
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            int lineNuber = -1;
+
+            if (this.dead < Integer.parseInt(lines.get(0)) &&
+                    this.dead > Integer.parseInt(lines.get(lines.size() - 1))) {
+                for (String line : lines) {
+                    if (Integer.parseInt(line) < this.dead) {
+                        lineNuber = lines.indexOf(line);
+                        break;
+                    }
+                }
+            }
+
+            if (lineNuber != -1) {
+
+                ArrayList<String> newLines = new ArrayList<>();
+
+                for (String line : lines) {
+                    if (lines.indexOf(line) < lineNuber) {
+                        newLines.add(line);
+                    }
+                }
+
+                newLines.add(String.valueOf(this.dead));
+
+                for (String line : lines) {
+
+                    if (lines.indexOf(line) >= lineNuber && lines.indexOf(line) < lines.indexOf(lines.get(lines.size() - 1))) {
+                        newLines.add(line);
+                    }
+                }
+
+                lines = newLines;
+            }
+
+            try {
+                BufferedWriter writer = Files.newBufferedWriter(file.toPath());
+
+                for (String line : lines) {
+                    writer.write(line);
+                    writer.newLine();
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

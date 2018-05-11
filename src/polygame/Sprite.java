@@ -26,7 +26,7 @@ public class Sprite {
     }
 
     public void loadImage(String imageName) {
-            URL url = getClass().getResource("resources/" + imageName);
+            URL url = getClass().getResource("/" + imageName);
             ImageIcon ii = new ImageIcon(url);
             this.image = ii.getImage();
     }

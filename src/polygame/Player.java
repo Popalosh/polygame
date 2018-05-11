@@ -40,7 +40,7 @@ class Player extends Sprite {
         dy = 0;
         dx = 0;
 
-        if (keys[32]) { //space
+        if (keys[32]) {
             this.fire();
             keys[32] = false;
         }

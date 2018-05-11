@@ -13,7 +13,14 @@
 
     <build>
         <directory>target/product/polygame</directory>
-        <sourceDirectory>src/polygame</sourceDirectory>
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>
+                    src/polygame/resources
+                </directory>
+            </resource>
+        </resources>
         <plugins>
             <!-- Maven JAR Plugin -->
             <plugin>
@@ -23,7 +30,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Game</mainClass>
+                            <mainClass>polygame/Game</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
