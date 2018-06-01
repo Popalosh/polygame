@@ -1,5 +1,3 @@
-package polygame;
-
 class Alien extends Sprite {
 
     private int ALIEN_SPEED = 2;

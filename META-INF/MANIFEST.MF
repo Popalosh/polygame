@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: polygame.Game
+Main-Class: Game
 Created-By: Popalosh
 Content-Type: Game

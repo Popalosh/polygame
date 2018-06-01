@@ -1,5 +1,4 @@
-package polygame;
-
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 class Player extends Sprite {
@@ -45,19 +44,19 @@ class Player extends Sprite {
             keys[32] = false;
         }
 
-        if (keys[65]) { // a
+        if (keys[65] || keys[KeyEvent.VK_LEFT]) { // a
             this.dx = -PLAYER_SPEED;
         }
 
-        if (keys[68]) { // d
+        if (keys[68] || keys[KeyEvent.VK_RIGHT]) { // d
             this.dx = PLAYER_SPEED;
         }
 
-        if (keys[87]) {  // w
+        if (keys[87] || keys[KeyEvent.VK_UP]) {  // w
             this.dy = -PLAYER_SPEED;
         }
 
-        if (keys[83]) { // s
+        if (keys[83] || keys[KeyEvent.VK_DOWN]) { // s
             this.dy = PLAYER_SPEED;
         }
     }

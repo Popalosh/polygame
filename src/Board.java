@@ -1,5 +1,3 @@
-package polygame;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,13 +17,12 @@ public class Board extends JPanel implements ActionListener {
     private ArrayList<Alien> aliens;
     private boolean ingame;
     private boolean inmenu;
-    //    private boolean readName;
     private boolean records;
     private boolean recordVisibility = false;
     private final int ICRAFT_X = 60;
     private final int ICRAFT_Y = 60;
-    public static final int B_WIDTH = 800;
-    private final int B_HEIGHT = 500;
+    public static final int B_WIDTH = 900;
+    private final int B_HEIGHT = 600;
     private final int DELAY = 7;
     private int dead;
     private int health;
@@ -34,7 +31,6 @@ public class Board extends JPanel implements ActionListener {
     private int countOfAlien;
     private ArrayList<Explosion> explosions;
     private ArrayList<Counter> counters;
-    //    private StringBuilder name;
     public static ArrayList<String> lines;
     private Graphics g;
     private boolean isScoreboardExist;
@@ -96,8 +92,8 @@ public class Board extends JPanel implements ActionListener {
         this.aliens = new ArrayList();
 
         for (int i = 0; i < this.countOfAlien; ++i) {
-            int randX = B_WIDTH + (int) (Math.random() * 800);
-            int randY = (int) (Math.random() * 440);
+            int randX = B_WIDTH + (int) (Math.random() * 900);
+            int randY = 18 + (int) (Math.random() * 512);
             this.aliens.add(new Alien(randX, randY));
         }
     }
@@ -105,15 +101,15 @@ public class Board extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (this.isScoreboardExist) {
-            if (!this.ingame && this.inmenu /*&& !this.readName*/ && !this.records) {
+            if (!this.ingame && this.inmenu && !this.records) {
                 this.drawMenu(g);
 //            } else if (this.readName) {
 //                this.drawReadNamePanel(g);
-            } else if (!this.ingame && !this.inmenu /*&& !this.readName*/ && this.records && this.recordVisibility) {
+            } else if (!this.ingame && !this.inmenu && this.records && this.recordVisibility) {
                 this.drawScoreBoard(g);
-            } else if (this.ingame && !this.inmenu /*&& !this.readName*/ && !this.records) {
+            } else if (this.ingame && !this.inmenu && !this.records) {
                 this.drawObjects(g);
-            } else if (!this.ingame && !this.inmenu /*&& !this.readName*/ && !this.records) {
+            } else if (!this.ingame && !this.inmenu && !this.records) {
                 this.drawGameOver(g);
             }
         } else {
@@ -156,12 +152,14 @@ public class Board extends JPanel implements ActionListener {
         }
 
         g.setColor(Color.WHITE);
-        g.drawString("Aliens killed: " + this.dead, 5, 15);
-        g.drawString("Health: " + this.health, 730, 15);
+        g.drawString("Aliens killed: " + this.dead, 5, 16);
+        g.drawString("Health: " + this.health, 800, 16);
+        g.drawLine(0, 18, 900, 18);
     }
 
     private void drawMsg(Graphics g) {
-        String msg = "Scoreboard file not found, please restart the game";
+        String msg = "Scoreboard file not found";
+        String msg2 = "Press Enter to create";
 
         Font small = new Font("Helvetica", 1, 18);
         FontMetrics fm = this.getFontMetrics(small);
@@ -170,6 +168,7 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);
 
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
+        g.drawString(msg2, (B_WIDTH - fm.stringWidth(msg2)) / 2, 40 +this.B_HEIGHT / 2);
     }
 
     private void drawMenu(Graphics g) {
@@ -188,21 +187,6 @@ public class Board extends JPanel implements ActionListener {
             g.drawString(scores, (B_WIDTH - fm.stringWidth(scores)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
         }
     }
-
-//    private void drawReadNamePanel(Graphics g) {  // Need to sort out why that method doesn't drawing
-//        String ask = "Write Your NickName";
-//        TextField field = new TextField();
-//        field.addActionListener(this); // idk how to use textField
-//
-//        Font small = new Font("Helvetica", 1, 22);
-//        FontMetrics fm = this.getFontMetrics(small);
-//
-//        g.setColor(Color.WHITE);
-//        g.setFont(small);
-//        g.drawString(ask, (B_WIDTH - fm.stringWidth(ask)) / 2, this.B_HEIGHT / 2);
-//        g.drawString(field.getText(), (B_WIDTH - fm.stringWidth(field.getText())) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
-//        ;
-//    }
 
     public void drawScoreBoard(Graphics g) {
 
@@ -238,7 +222,7 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(Color.WHITE);
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
-        g.drawString(score, (int) ((double) (B_WIDTH - fm.stringWidth(score)) / 1.79D), (int) ((double) this.B_HEIGHT / 1.7D));
+        g.drawString(score, ((B_WIDTH - fm.stringWidth(score)) / 2), (int) ((double) this.B_HEIGHT / 1.7D));
         g.drawString(res, (B_WIDTH - fm.stringWidth(res)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
     }
 
@@ -260,8 +244,6 @@ public class Board extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (this.inmenu) {
             this.menu();
-//        } else if (this.readName) {
-//            this.reading();
         } else if (this.records) {
             this.recordsPanel();
         } else if (!this.ingame) {
@@ -273,16 +255,25 @@ public class Board extends JPanel implements ActionListener {
             this.increaseHealth();
             this.increaseAlien();
             this.checkCollision();
-            this.repaint();
             this.updateCounters();
             this.checkExplosions();
         }
+        this.repaint();
     }
 
     private void updatePlayer() {
         if (this.player.isVisible()) {
             this.player.getInput();
-            this.player.move();
+            if (this.player.getX() >= 0 &&
+                    this.player.getY() >= 0) {
+                this.player.move();
+            }
+            if (this.player.getY() < 18) this.player.setY(18);
+            if (this.player.getY() > (int) this.B_HEIGHT - (int) player.getBounds().getHeight())
+                this.player.setY((int) this.B_HEIGHT - (int) player.getBounds().getHeight());
+            if (this.player.getX() < 0) this.player.setX(0);
+            if (this.player.getX() > (int) this.B_WIDTH - (int) this.player.getBounds().getWidth())
+                this.player.setX((int) this.B_WIDTH - (int) this.player.getBounds().getWidth());
         }
     }
 
@@ -396,35 +387,16 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-//    public void reading() {
-//        if (KeyManager.getKeys()[KeyEvent.VK_ENTER]) {
-//            this.ingame = true;
-//            this.readName = false;
-//            this.records = false;
-//            this.inmenu = false;
-//        }
-//    }
-
     public void recordsPanel() {
         if (KeyManager.getKeys()[KeyEvent.VK_ESCAPE]) {
             this.ingame = false;
-//            this.readName = false;
             this.records = false;
             this.inmenu = true;
         }
     }
 
     public void writingRecord() {
-//        Should rework that part with correct using of NickName
-//
-//        for (String line : oldLines) {
-//            if (this.dead > Integer.parseInt(line.split(" ")[1])) {
-//                lines.add(oldLines.indexOf(line), this.name + " " +  this.dead);
-//                break;
-//            }
-//        }
-
-        if (!(this.dead < Integer.parseInt(lines.get(0)))) {
+        if (this.dead > Integer.parseInt(lines.get(0))) {
             try {
                 BufferedWriter writer = Files.newBufferedWriter(file.toPath());
                 writer.write(String.valueOf(this.dead));

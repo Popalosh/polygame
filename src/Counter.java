@@ -1,6 +1,4 @@
-package polygame;
-
-public class Counter  {
+public class Counter {
 
     public int counter;
 

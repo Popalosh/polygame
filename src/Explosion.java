@@ -1,10 +1,7 @@
-package polygame;
-
-
 public class Explosion extends Sprite {
 
-    public Explosion (int x, int y) {
-        super(x,y);
+    public Explosion(int x, int y) {
+        super(x, y);
         this.initExplosion();
     }
 

@@ -1,5 +1,3 @@
-package polygame;
-
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.net.URL;
@@ -26,9 +24,9 @@ public class Sprite {
     }
 
     public void loadImage(String imageName) {
-            URL url = getClass().getResource("/" + imageName);
-            ImageIcon ii = new ImageIcon(url);
-            this.image = ii.getImage();
+        URL url = getClass().getResource("/" + imageName);
+        ImageIcon ii = new ImageIcon(url);
+        this.image = ii.getImage();
     }
 
     public Image getImage() {
@@ -41,6 +39,14 @@ public class Sprite {
 
     public int getY() {
         return this.y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public boolean isVisible() {

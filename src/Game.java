@@ -1,10 +1,4 @@
-package polygame;
-
 import java.awt.EventQueue;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 
 public class Game extends JFrame {

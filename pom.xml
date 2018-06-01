@@ -8,16 +8,16 @@
 
     <groupId>polygame</groupId>
     <artifactId>polygame</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <build>
-        <directory>target/product/polygame</directory>
+        <directory>target</directory>
         <sourceDirectory>src</sourceDirectory>
         <resources>
             <resource>
                 <directory>
-                    src/polygame/resources
+                    src/resources
                 </directory>
             </resource>
         </resources>
@@ -30,7 +30,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>polygame/Game</mainClass>
+                            <mainClass>Game</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -1,6 +1,3 @@
-package polygame;
-
-
 class Missile extends Sprite {
 
     private final int BOARD_WIDTH = Board.B_WIDTH;
