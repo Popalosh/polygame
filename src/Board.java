@@ -18,7 +18,6 @@ public class Board extends JPanel implements ActionListener {
     private boolean ingame;
     private boolean inmenu;
     private boolean records;
-    private boolean recordVisibility = false;
     private final int ICRAFT_X = 60;
     private final int ICRAFT_Y = 60;
     public static final int B_WIDTH = 900;
@@ -105,7 +104,7 @@ public class Board extends JPanel implements ActionListener {
                 this.drawMenu(g);
 //            } else if (this.readName) {
 //                this.drawReadNamePanel(g);
-            } else if (!this.ingame && !this.inmenu && this.records && this.recordVisibility) {
+            } else if (!this.ingame && !this.inmenu && this.records) {
                 this.drawScoreBoard(g);
             } else if (this.ingame && !this.inmenu && !this.records) {
                 this.drawObjects(g);
@@ -168,7 +167,7 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);
 
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
-        g.drawString(msg2, (B_WIDTH - fm.stringWidth(msg2)) / 2, 40 +this.B_HEIGHT / 2);
+        g.drawString(msg2, (B_WIDTH - fm.stringWidth(msg2)) / 2, 40 + this.B_HEIGHT / 2);
     }
 
     private void drawMenu(Graphics g) {
@@ -183,9 +182,7 @@ public class Board extends JPanel implements ActionListener {
 
         g.drawString(start, (B_WIDTH - fm.stringWidth(start)) / 2, this.B_HEIGHT / 2);
 
-        if (this.recordVisibility) {
-            g.drawString(scores, (B_WIDTH - fm.stringWidth(scores)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
-        }
+        g.drawString(scores, (B_WIDTH - fm.stringWidth(scores)) / 2, (int) ((double) this.B_HEIGHT / 1.5D));
     }
 
     public void drawScoreBoard(Graphics g) {
@@ -323,7 +320,6 @@ public class Board extends JPanel implements ActionListener {
                 this.player.setVisible(false);
                 alien.setVisible(false);
                 this.ingame = false;
-                this.recordVisibility = true;
                 this.writingRecord();
             }
         }
@@ -373,17 +369,13 @@ public class Board extends JPanel implements ActionListener {
     public void menu() {
         if (KeyManager.getKeys()[KeyEvent.VK_ENTER]) {
             this.ingame = true;
-//            this.readName = true;
             this.inmenu = false;
         }
 
-        if (this.recordVisibility) {
-            if (KeyManager.getKeys()[KeyEvent.VK_R]) {
-                this.ingame = false;
-//                this.readName = false;
-                this.records = true;
-                this.inmenu = false;
-            }
+        if (KeyManager.getKeys()[KeyEvent.VK_R]) {
+            this.ingame = false;
+            this.records = true;
+            this.inmenu = false;
         }
     }
 
