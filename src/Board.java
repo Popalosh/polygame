@@ -34,6 +34,7 @@ public class Board extends JPanel implements ActionListener {
     private Graphics g;
     private boolean isScoreboardExist;
     private File file;
+    private Image background;
 
 
     public Board() {
@@ -41,11 +42,13 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void initBoard() {
+        Sprite sprite = new Sprite(0,0);
+        sprite.loadImage("background.png");
+        this.background = sprite.getImage();
         this.addKeyListener(new KeyManager());
         this.setFocusable(true);
         this.setBackground(Color.BLACK);
         this.inmenu = false;
-//        this.readName = false;
         this.ingame = false;
         this.records = false;
         this.setPreferredSize(new Dimension(B_WIDTH, this.B_HEIGHT));
@@ -99,11 +102,10 @@ public class Board extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawImage(background,0,0,this);
         if (this.isScoreboardExist) {
             if (!this.ingame && this.inmenu && !this.records) {
                 this.drawMenu(g);
-//            } else if (this.readName) {
-//                this.drawReadNamePanel(g);
             } else if (!this.ingame && !this.inmenu && this.records) {
                 this.drawScoreBoard(g);
             } else if (this.ingame && !this.inmenu && !this.records) {
@@ -150,7 +152,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.drawString("Aliens killed: " + this.dead, 5, 16);
         g.drawString("Health: " + this.health, 800, 16);
         g.drawLine(0, 18, 900, 18);
@@ -163,7 +165,7 @@ public class Board extends JPanel implements ActionListener {
         Font small = new Font("Helvetica", 1, 18);
         FontMetrics fm = this.getFontMetrics(small);
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.setFont(small);
 
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
@@ -177,7 +179,7 @@ public class Board extends JPanel implements ActionListener {
         Font small = new Font("Helvetica", 1, 18);
         FontMetrics fm = this.getFontMetrics(small);
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.setFont(small);
 
         g.drawString(start, (B_WIDTH - fm.stringWidth(start)) / 2, this.B_HEIGHT / 2);
@@ -189,10 +191,10 @@ public class Board extends JPanel implements ActionListener {
 
         String msg = "Press Escape to go to Menu";
 
-        Font small = new Font("Helvetica", 1, 12);
+        Font small = new Font("Helvetica", 1, 18);
         FontMetrics fm = this.getFontMetrics(small);
 
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.setFont(small);
 
 
@@ -216,7 +218,7 @@ public class Board extends JPanel implements ActionListener {
         String score = "Your score: " + (this.dead);
         Font small = new Font("Helvetica", 1, 18);
         FontMetrics fm = this.getFontMetrics(small);
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, this.B_HEIGHT / 2);
         g.drawString(score, ((B_WIDTH - fm.stringWidth(score)) / 2), (int) ((double) this.B_HEIGHT / 1.7D));
